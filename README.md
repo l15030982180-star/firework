@@ -36,7 +36,7 @@
     <canvas id="fireworksCanvas"></canvas>
 
     <button id="musicBtn">🎵 点击开启音乐</button>
-    <audio id="bgm" loop>
+    <audio id="bgm" loop preload="auto">
         <source src="bgm.mp3" type="audio/mpeg">
     
 
@@ -101,19 +101,27 @@ function animate(){
 animate();
 setInterval(createFirework, 900);
 
-// 音乐控制
+// 修复版音乐控制，适配微信
 const bgm = document.getElementById('bgm');
 const musicBtn = document.getElementById('musicBtn');
 let musicPlay = false;
-musicBtn.onclick = function(){
-    if(!musicPlay){
-        bgm.play();
-        musicBtn.innerText = "🎵 暂停音乐";
-        musicPlay = true;
-    }else{
-        bgm.pause();
-        musicBtn.innerText = "🎵 点击开启音乐";
-        musicPlay = false;
+
+bgm.load(); // 强制预加载音频
+
+musicBtn.onclick = async function(){
+    try{
+        if(!musicPlay){
+            await bgm.play();
+            musicBtn.innerText = "🎵 暂停音乐";
+            musicPlay = true;
+        }else{
+            bgm.pause();
+            musicBtn.innerText = "🎵 点击开启音乐";
+            musicPlay = false;
+        }
+    }catch(err){
+        alert("音频加载失败！请确认仓库根目录已经上传 bgm.mp3");
+        console.log(err);
     }
 }
 </script>
